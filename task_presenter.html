@@ -115,47 +115,48 @@ function show_map(wktP,X,Y){
     var x_center = X;
     var y_center = Y;
     
-	// create features from wkt format
+    // create features from wkt format
     var vects = new ol.source.Vector();
     var format = new ol.format.WKT();
-	var feature = format.readFeature(wkt);
+    var feature = format.readFeature(wkt);
     vects.addFeature(feature);
     
-	// define feature style, color = red and outline width = 3
+    // define feature style, color = red and outline width = 3
     var style_features = new ol.style.Style({
         stroke: new ol.style.Stroke({
             color: 'rgba(255,0,0,1.0)',
             width: 3
         })
     });
-	// create vector layer containing features created before
+    
+    // create vector layer containing features created before
     var features_layer = new ol.layer.Vector({
         source: vects,
         style: style_features
     }); 
-	
-	// add background layer, currently using Bing Aerial imagery
+    
+    // add background layer, currently using Bing Aerial imagery
     var Bing_layer = new ol.layer.Tile({
         source: new ol.source.BingMaps({
             key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3',
             imagerySet: 'Aerial'
         })
     });
-	// define zoom level and map center
+    
+    // define zoom level and map center
     var map_view = new ol.View({
         center: [x_center,y_center],
         zoom: 17,
         minZoom: 16
     });
-	
-	// define interaction
-	var dblclick_zoom = new ol.interaction.DoubleClickZoom();
-	var mouse_wheel_zoom = new ol.interaction.MouseWheelZoom();
-	var drag_pan = new ol.interaction.DragPan();
-	var key_board_pan = new ol.interaction.KeyboardPan();
-	var key_board_zoom = new ol.interaction.KeyboardZoom();
-	
-	// create new map
+    // define interactions
+    var dblclick_zoom = new ol.interaction.DoubleClickZoom();
+    var mouse_wheel_zoom = new ol.interaction.MouseWheelZoom();
+    var drag_pan = new ol.interaction.DragPan();
+    var key_board_pan = new ol.interaction.KeyboardPan();
+    var key_board_zoom = new ol.interaction.KeyboardZoom();
+    
+    // create new map
     var map = new ol.Map({
         view: map_view,
 		controls: ol.control.defaults({zoom:false, rotate:false, attribution:false}),
@@ -164,17 +165,17 @@ function show_map(wktP,X,Y){
         target: 'openlayers_map',
         keyboardEventTarget: document
     });
-	
-	// add scale line to map
-	var myScaleLine = new ol.control.ScaleLine();
-	map.addControl(myScaleLine);
-	
-	// additional functionality is added after dblclick on map
-	map.once('dblclick', function() {
-		map.addInteraction(drag_pan);
-		map.addInteraction(key_board_pan);
-		map.addInteraction(key_board_zoom);
-		map.addInteraction(mouse_wheel_zoom);		
+    
+    // add scale line to map
+    var myScaleLine = new ol.control.ScaleLine();
+    map.addControl(myScaleLine);
+    
+    // additional functionality is added after dblclick on map
+    map.once('dblclick', function() {
+	map.addInteraction(drag_pan);
+	map.addInteraction(key_board_pan);
+	map.addInteraction(key_board_zoom);
+	map.addInteraction(mouse_wheel_zoom);		
 	});
 	
 }
