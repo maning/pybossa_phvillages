@@ -60,7 +60,7 @@
         <!-- Photo DIV -->
 		
         <div class="wrapper" style="background-color:blue">
-            <div class="main" id="openlayers_map" style="background-color:grey"></div>
+            <div class="main" id="leaflet_map" style="background-color:grey"></div>
         </div>
         
         <!-- Start DIV for the submission buttons -->
@@ -89,23 +89,21 @@
 <div class="row">    
     <div class="span8.offset2, collapse" id="information">
         <h1>Additional information</h1>
-        <p>Help <a href="http://www.missingmaps.org/">Missing Maps</a> to map human settlements and roads in South Kivu, Congo (DRC).</p>
-        <p>In case of any problems or questions please contact <a href="Herfort@stud.uni-heidelberg.de">Herfort@stud.uni-heidelberg.de</a></p>
-        <h2>What do human settlements and roads look like?</h2> 
-        <a href="/uploads/user_3/examples_res_areas.png"><img src="/uploads/user_3/examples_res_areas.png" alt="help" width="800"></a>
+        <p>Put some additional information here</p>
         <h2>Hints</h2>
         <ul>
             <li><b>Short-cuts</b>: You may use short-cuts in order to speed up the questionare:<br>
                 A or Y for "Yes", W or N for "No", D or B for "No/Bad Imagery"
-            <li><b>Additional functionality</b>: Additional functionality can be activated by double clicking on the map.
-			<ul><li><b>Zooming</b>: You may zoom the map by using the mouse-wheel or using <b>+</b> and <b>-</b> keys</li>
-            <li><b>Moving</b>: You may navigate the map by dragging it with the mouse or using the <b>←</b> <b>→</b> <b>↑</b> <b>↓</b> keys.</li><ul>
-        <ul>
+			<li><b>Zooming</b>: You may zoom the map by using the mouse-wheel or using <b>+</b> and <b>-</b> keys
+            <li><b>Moving</b>: You may navigate the map by dragging it with the mouse or using the arrow keys.</li>
+        </ul>
     </div>
 </div><!-- End of Information Row -->
 
-<script src="http://openlayers.org/en/v3.7.0/build/ol.js" type="text/javascript"></script>
-<link rel="stylesheet" href="http://openlayers.org/en/v3.7.0/css/ol.css" type="text/css">
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
+<script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+<script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
+<script src='http://crowdmap.geog.uni-heidelberg.de/uploads/user_3/Bing.js'></script>
 
 <script>
 function show_map(wktP,X,Y){
@@ -114,69 +112,27 @@ function show_map(wktP,X,Y){
     var wkt = wktP;
     var x_center = X;
     var y_center = Y;
+	
+	if (typeof l_map !== 'undefined') {
+    // the variable is defined
+	l_map.remove()
+	}
     
-    // create features from wkt format
-    var vects = new ol.source.Vector();
-    var format = new ol.format.WKT();
-    var feature = format.readFeature(wkt);
-    vects.addFeature(feature);
-    
-    // define feature style, color = red and outline width = 3
-    var style_features = new ol.style.Style({
-        stroke: new ol.style.Stroke({
-            color: 'rgba(255,0,0,1.0)',
-            width: 3
-        })
-    });
-    
-    // create vector layer containing features created before
-    var features_layer = new ol.layer.Vector({
-        source: vects,
-        style: style_features
-    }); 
-    
-    // add background layer, currently using Bing Aerial imagery
-    var Bing_layer = new ol.layer.Tile({
-        source: new ol.source.BingMaps({
-            key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3',
-            imagerySet: 'Aerial'
-        })
-    });
-    
-    // define zoom level and map center
-    var map_view = new ol.View({
-        center: [x_center,y_center],
-        zoom: 17,
-        minZoom: 16
-    });
-    // define interactions
-    var dblclick_zoom = new ol.interaction.DoubleClickZoom();
-    var mouse_wheel_zoom = new ol.interaction.MouseWheelZoom();
-    var drag_pan = new ol.interaction.DragPan();
-    var key_board_pan = new ol.interaction.KeyboardPan();
-    var key_board_zoom = new ol.interaction.KeyboardZoom();
-    
-    // create new map
-    var map = new ol.Map({
-        view: map_view,
-		controls: ol.control.defaults({zoom:false, rotate:false, attribution:false}),
-		interactions: [dblclick_zoom],
-        layers: [Bing_layer, features_layer],
-        target: 'openlayers_map',
-        keyboardEventTarget: document
-    });
-    
-    // add scale line to map
-    var myScaleLine = new ol.control.ScaleLine();
-    map.addControl(myScaleLine);
-    
-    // additional functionality is added after dblclick on map
-    map.once('dblclick', function() {
-	map.addInteraction(drag_pan);
-	map.addInteraction(key_board_pan);
-	map.addInteraction(key_board_zoom);
-	map.addInteraction(mouse_wheel_zoom);		
+	l_map = L.map('leaflet_map', {
+		center: [y_center, x_center],
+		zoom: 17,
+		minZoom: 15,
+		maxZoom: 19,
+		crs: L.CRS.EPSG3857
 	});
+	
+	L.control.scale().addTo(l_map);
+	
+	var tileLayer = new L.BingLayer('Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3', {type: 'Aerial'});
+	
+	l_map.addLayer(tileLayer);
+	
+	omnivore.wkt.parse(wkt).addTo(l_map);
 	
 }
 
