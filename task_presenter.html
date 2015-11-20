@@ -102,8 +102,8 @@
 
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
 <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
-<script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
-<script src='http://crowdmap.geog.uni-heidelberg.de/uploads/user_3/Bing.js'></script>
+<script src='http://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
+<script src='https://raw.githubusercontent.com/maning/pybossa_phvillages/master/js/Bing.js'></script>
 
 <script>
 function show_map(wktP,X,Y){
@@ -120,8 +120,8 @@ function show_map(wktP,X,Y){
     
 	l_map = L.map('leaflet_map', {
 		center: [y_center, x_center],
-		zoom: 17,
-		minZoom: 15,
+		zoom: 15,
+		minZoom: 12,
 		maxZoom: 19,
 		crs: L.CRS.EPSG3857
 	});
@@ -137,7 +137,7 @@ function show_map(wktP,X,Y){
 }
 
 function loadUserProgress() {
-    pybossa.userProgress('missing_maps_follow_up').done(function(data){
+    pybossa.userProgress('maguindanao_villages').done(function(data){
         var pct = Math.round((data.done*100)/data.total);
         $("#progress").css("height", pct.toString() +"%");
         $("#progress").attr("title", pct.toString() + "% completed!");
@@ -213,7 +213,7 @@ pybossa.presentTask(function(task, deferred) {
     console.log("presentTask done");
 });
 
-pybossa.run('missing_maps_follow_up');
+pybossa.run('maguindanao_villages');
 
 
 </script>
